@@ -1,0 +1,29 @@
+.matrix-container {
+    position: relative;
+}
+
+.matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.buffer-zone {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: absolute;
+    top: calc(-100% - 2px);
+    left: 0px;
+
+}
+
+.row {
+    display: flex;
+    gap: 2px;
+}
+
+.tile {
+    height: 18px;
+    width: 18px;
+}
