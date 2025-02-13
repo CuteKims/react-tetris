@@ -1,19 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { Tetrion } from './components/Tetrion'
-import { useDispatch } from 'react-redux'
+import { MainMenu } from './components/MainMenu/MainMenu'
+import { DeveloperOverlay } from './components/DeveloperOverlay/DeveloperOverlay'
+import { createContext, useEffect, useRef, useState } from 'react'
+import { GameTetrion } from './game/gameTetrion'
+import { Tetrion } from './components/Tetrion/Tetrion'
+import { setAutoFreeze } from 'immer'
+setAutoFreeze(false)
+
+export enum AppPage {
+    MainMenu = 'main_menu',
+    Tetrion = 'tetrion',
+    Settings = 'settings',
+    About = 'about'
+}
+
+export const globalAppContext = createContext<{
+    page: AppPage,
+    navigate: React.Dispatch<React.SetStateAction<AppPage>>,
+    tetrion: GameTetrion //@ts-ignore
+}>(null)
 
 function App() {
-    const [count, setCount] = useState(0)
-    const dispatch = useDispatch()
-
+    const [page, navigate] = useState<AppPage>(AppPage.MainMenu)
+    let tetrion = useRef(new GameTetrion()).current
+    useEffect(() => {
+        let {keyDownListener, keyUpListener} = tetrion.getKeyboardEventListeners()
+        document.addEventListener('keydown', keyDownListener)
+        document.addEventListener('keyup', keyUpListener)
+        return () => {
+            document.removeEventListener('keydown', keyDownListener)
+            document.removeEventListener('keyup', keyUpListener)
+        }
+    }, [])
     return (
-        <>
-            <Tetrion />
-        </>
+        <globalAppContext.Provider value={{page, navigate, tetrion}}>
+            {(() => {
+                switch (page) {
+                    case AppPage.MainMenu:
+                        return <MainMenu />
+                    case AppPage.Tetrion:
+                        return <Tetrion />
+                    case AppPage.Settings:
+                        return <></>
+                    case AppPage.About:
+                        return <></>
+                }
+            })()}
+            <DeveloperOverlay />
+        </globalAppContext.Provider>
     )
 }
+
+
 
 export default App

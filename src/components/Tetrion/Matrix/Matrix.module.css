@@ -1,21 +1,28 @@
-.matrix-container {
+#matrix-container {
     position: relative;
+    margin: auto;
 }
 
-.matrix {
+#matrix {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.buffer-zone {
+#buffer-zone {
     display: flex;
     flex-direction: column;
     gap: 2px;
     position: absolute;
     top: calc(-100% - 2px);
     left: 0px;
+}
 
+#active-tetromino {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: absolute;
 }
 
 .row {

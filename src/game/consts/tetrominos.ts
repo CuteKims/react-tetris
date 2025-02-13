@@ -1,4 +1,4 @@
-import { Orientation } from "./wallKickTable"
+import { TetrominoOrientation } from "./wallKickTable"
 
 export enum TetrominoType {
     I = 'I',
@@ -12,7 +12,7 @@ export enum TetrominoType {
 
 type TetrominoShape = {
     [K in TetrominoType]: {
-        [K in Orientation]: number[][]
+        [K in TetrominoOrientation]: number[][]
     }
 }
 
@@ -178,7 +178,7 @@ export const TETROMINO_SHAPE: TetrominoShape = {
 }
 
 
-export const TILE_COLOR: {
+export const TETROMINO_COLOR: {
     [K in TetrominoType]: string
 } & {
     'garbage': string
