@@ -74,43 +74,43 @@ export class GameMatrix {
     public clear() {
         let filledRows: number[] = []
         
-        outerLoop:
-        for (let [rowNumber, row] of this.matrixState.entries()) {
-            for (let tile of row) {
-                if(tile.type == 'empty') continue outerLoop
-            }
-            filledRows.push(rowNumber)
+        for (const [rowNumber, row] of this.matrixState.entries()) {
+            if (row.every(tile => tile.type !== 'empty'))
+                filledRows.push(rowNumber)
         }
 
         if(filledRows.length === 0) return
 
-        let chunks = []
+        let chunks: [number, number][]= []
 
-        for (let [index, rowNumber] of filledRows.entries()) {
-            if(rowNumber === 0) continue
-            if(index <= 0) {chunks.push([0, rowNumber]); continue}
-            if(filledRows[index - 1] + 1 === rowNumber) continue
-            else chunks.push([filledRows[index - 1] + 1, rowNumber])
+        for (const [index, rowNumber] of filledRows.entries()) {
+            switch (true) {
+                case rowNumber === 0:
+                    break;
+                case index <= 0:
+                    chunks.push([0, rowNumber])
+                    break;
+                case filledRows[index - 1] + 1 === rowNumber:
+                    break;
+                default:
+                    chunks.push([filledRows[index - 1] + 1, rowNumber])
+                    break;
+            }
+            // if(rowNumber === 0) continue
+            // if(index <= 0) {chunks.push([0, rowNumber]); continue}
+            // if(filledRows[index - 1] + 1 === rowNumber) continue
+            // else chunks.push([filledRows[index - 1] + 1, rowNumber])
         }
-        
         if(filledRows.slice(-1)[0] < 39) chunks.push([filledRows.slice(-1)[0] + 1, 40])
 
-        let newMatrixState: MatrixState = []
+        let newMatrixState: MatrixState = chunks.flatMap(
+            range => this.matrixState.slice(range[0], range[1])
+        )
+        // chunks.forEach(range => {
+        //     newMatrixState.push(...this.matrixState.slice(range[0], range[1]))
+        // })
 
-        chunks.forEach(range => {
-            newMatrixState.push(...this.matrixState.slice(range[0], range[1]))
-        })
-
-        if(newMatrixState.length < 40) {
-            let line = []
-            for (let j = 0; j < this.matrixState[0].length; j++) {
-                line.push({type: 'empty'} as Tile)
-            }
-            newMatrixState.push(line)
-            for (let i = 0; i < 40 - newMatrixState.length - 1; i++) {
-                newMatrixState.push(structuredClone(line))
-            }
-        }
+        fillEmptyMatrix(newMatrixState, this.matrixState[0].length, 40)
 
         this.matrixState = newMatrixState
     }
@@ -118,18 +118,21 @@ export class GameMatrix {
     public static generateEmptyMatrix(columns: number): MatrixState {
         let matrix: MatrixState = []
 
-        // It seems that this is the fastest way to do it...
-        // Author: Fachep
-        let line = [];
-        for (let j = 0; j < columns; j++) {
-            line.push({type: 'empty'} as Tile)
-        }
-        matrix.push(line)
-        
-        for (let i = 0; i < 40 - 1; i++) {
-            matrix.push(structuredClone(line))
-        }
+        fillEmptyMatrix(matrix, columns, 40)
 
         return matrix
+    }
+}
+
+function fillEmptyMatrix(matrix: MatrixState, columns: number, maxRow: number) {
+    if(matrix.length < maxRow) {
+        const emptyLine: Tile[] = []
+        while(emptyLine.length < columns) {
+            emptyLine.push({type: 'empty'} as Tile)
+        }
+        matrix.push(emptyLine)
+        while (matrix.length < maxRow) {
+            matrix.push(structuredClone(emptyLine))
+        }
     }
 }

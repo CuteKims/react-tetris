@@ -4,8 +4,6 @@ import { DeveloperOverlay } from './components/DeveloperOverlay/DeveloperOverlay
 import { createContext, useEffect, useRef, useState } from 'react'
 import { GameTetrion } from './game/gameTetrion'
 import { Tetrion } from './components/Tetrion/Tetrion'
-import { setAutoFreeze } from 'immer'
-setAutoFreeze(false)
 
 export enum AppPage {
     MainMenu = 'main_menu',
@@ -23,15 +21,6 @@ export const globalAppContext = createContext<{
 function App() {
     const [page, navigate] = useState<AppPage>(AppPage.MainMenu)
     let tetrion = useRef(new GameTetrion()).current
-    useEffect(() => {
-        let {keyDownListener, keyUpListener} = tetrion.getKeyboardEventListeners()
-        document.addEventListener('keydown', keyDownListener)
-        document.addEventListener('keyup', keyUpListener)
-        return () => {
-            document.removeEventListener('keydown', keyDownListener)
-            document.removeEventListener('keyup', keyUpListener)
-        }
-    }, [])
     return (
         <globalAppContext.Provider value={{page, navigate, tetrion}}>
             {(() => {

@@ -192,3 +192,18 @@ export const TETROMINO_COLOR: {
     'L': '#EF7921',
     'garbage': '#7F7F7F'
 }
+
+export const TETROMINO_COLOR_RGB: {
+    [K in TetrominoType]: [number, number, number]
+} & {
+    'garbage': [number, number, number]
+} = {
+    'I': [49, 199, 239],
+    'O': [247, 211, 8],
+    'T': [173, 77, 156],
+    'S': [66, 182, 66],
+    'Z': [239, 32, 41],
+    'J': [90, 101, 173],
+    'L': [239, 121, 33],
+    'garbage': [127, 127, 127]
+}

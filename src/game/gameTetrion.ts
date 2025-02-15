@@ -5,22 +5,20 @@ import { KeyboardInputHandler } from "./keyboardInputHandler";
 export type GameMode = 'zen' | '40_lines'
 
 export class GameTetrion {
-    public gameLoop: GameLoop | null
-    private keyboardInputHandler: KeyboardInputHandler
-    
-    constructor() {
-        this.gameLoop = null
-        this.keyboardInputHandler = new KeyboardInputHandler()
-    }
+    public gameLoop: GameLoop | null = null
+    private keyboardInputHandler = new KeyboardInputHandler()
+
+    constructor() {}
 
     public initializeGame(mode: GameMode) {
         const gameSettings: GameSettings = {
             matrixColumns: 10,
             bagRandomizerType: '7-bag'
         }
-        
+
         switch (mode) {
             case 'zen':
+                //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions
                 this.gameLoop = new GameLoop(gameSettings, () => this.keyboardInputHandler.pull())
                 break;
             case "40_lines":

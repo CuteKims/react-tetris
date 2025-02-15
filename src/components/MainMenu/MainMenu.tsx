@@ -1,10 +1,13 @@
-import { MouseEventHandler, useContext } from 'react'
+import { MouseEventHandler, useContext, useEffect } from 'react'
 import { TETROMINO_COLOR } from '../../game/consts/tetrominos'
 import styles from './MainMenu.module.css'
 import { AppPage, globalAppContext } from '../../App'
 
 export const MainMenu: React.FC = () => {
     const {navigate, tetrion} = useContext(globalAppContext)
+    useEffect(() => {
+        tetrion.endGame()
+    }, [])
     return (
         <div id={styles['main-menu']}>
             <div id={styles['button-container']}>
