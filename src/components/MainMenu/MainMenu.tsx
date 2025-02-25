@@ -2,12 +2,11 @@ import { MouseEventHandler, useContext, useEffect } from 'react'
 import { TETROMINO_COLOR } from '../../game/consts/tetrominos'
 import styles from './MainMenu.module.css'
 import { AppPage, globalAppContext } from '../../App'
+import { useNavigate } from 'react-router'
 
 export const MainMenu: React.FC = () => {
-    const {navigate, tetrion} = useContext(globalAppContext)
-    useEffect(() => {
-        tetrion.endGame()
-    }, [])
+    const {tetrion} = useContext(globalAppContext)
+    const navigate = useNavigate()
     return (
         <div id={styles['main-menu']}>
             <div id={styles['button-container']}>
@@ -17,8 +16,7 @@ export const MainMenu: React.FC = () => {
                         backgroundColor={TETROMINO_COLOR['S']}
                         textColor='white'
                         onClick={() => {
-                            tetrion.initializeGame('zen')
-                            navigate(AppPage.Tetrion)
+                            navigate('/game?mode=zen')
                         }}
                     />
                     <SquareButton
@@ -26,15 +24,14 @@ export const MainMenu: React.FC = () => {
                         backgroundColor={TETROMINO_COLOR['L']}
                         textColor='white'
                         onClick={() => {
-                            tetrion.initializeGame('40_lines')
-                            navigate(AppPage.Tetrion)
+                            navigate('/game?mode=40_lines')
                         }}
                     />
                     <SquareButton
                         text='设置'
                         backgroundColor={TETROMINO_COLOR['I']}
                         textColor='white'
-                        onClick={() => navigate(AppPage.Settings)}
+                        onClick={() => navigate('/settings')}
                     />
                 </div>
                 <div>

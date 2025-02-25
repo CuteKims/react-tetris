@@ -6,6 +6,9 @@ import { globalAppContext } from '../../App';
 import { MatrixState } from '../../game/gameMatrix';
 import { HoldState, TetrominoState } from '../../game/gameLoop';
 import { TetrominoType } from '../../game/consts/tetrominos';
+import { useSearchParams } from 'react-router';
+import { GameMode } from '../../game/gameTetrion';
+import { KeyboardInputHandler } from '../../game/keyboardInputHandler';
 
 export type TetrionState = {
     matrixState: MatrixState,
@@ -17,43 +20,32 @@ export type TetrionState = {
 
 export const Tetrion: React.FC = () => {
     const {tetrion} = useContext(globalAppContext)
+    const [params] = useSearchParams()
+    const gameLoop = useRef(tetrion.initializeGame(params.get('mode') as GameMode)).current
+    const inputHandler = useRef(new KeyboardInputHandler()).current
+    const [tetrionState, updateTetrionState] = useState<TetrionState | undefined>()
+    let tickCountRef = useRef<number>(0)
+    const [tickrate, updateTickrate] = useState(0)
     
-    //绑定键盘事件
-    useEffect(() => {
-        let {keyDownListener, keyUpListener} = tetrion.getKeyboardEventListeners()
-        document.addEventListener('keydown', keyDownListener)
-        document.addEventListener('keyup', keyUpListener)
-        return () => {
-            document.removeEventListener('keydown', keyDownListener)
-            document.removeEventListener('keyup', keyUpListener)
-        }
-    }, [])
-
-    // Tick循环
-    const [tetrionState, updateTetrionState] = useState<TetrionState | undefined>(tetrion.gameLoop?.getState())
-
     const {start, stop} = useTickLoop(() => {
-        tetrion.gameLoop?.tick()
-        updateTetrionState(tetrion.gameLoop?.getState())
+        updateTetrionState(gameLoop.tick(inputHandler.pull()))
         tickCountRef.current++
     }, 1000 / 60)
 
     useEffect(() => {
-        start()
-        return () => stop()
-    }, [])
-
-    // TPS (Ticks per second) 统计
-    let tickCountRef = useRef<number>(0)
-    const [tickrate, updateTickrate] = useState(0)
-
-    useEffect(() => {
+        let {keyDownListener, keyUpListener} = inputHandler.getListeners()
+        document.addEventListener('keydown', keyDownListener)
+        document.addEventListener('keyup', keyUpListener)
         let id = setInterval(() => {
             updateTickrate(tickCountRef.current)
             tickCountRef.current = 0
         }, 1000);
+        start()
         return () => {
+            document.removeEventListener('keydown', keyDownListener)
+            document.removeEventListener('keyup', keyUpListener)
             clearInterval(id)
+            stop()
         }
     }, [])
 

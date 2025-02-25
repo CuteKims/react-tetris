@@ -113,6 +113,7 @@
 }
 
 #preview-container h1 {
+    user-select: none;
     position: absolute;
     top: -44px;
     left: 0px;
@@ -156,6 +157,7 @@
 }
 
 #hold-container h1 {
+    user-select: none;
     position: absolute;
     top: -44px;
     right: 0px;

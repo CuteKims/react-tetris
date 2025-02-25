@@ -27,8 +27,6 @@ export type HoldState = {
 }
 
 export class GameLoop {
-    private pullInput: () => TetrionControl[]
-
     private matrix: GameMatrix
     private bagRandomizer: BagRandomizer
 
@@ -43,11 +41,9 @@ export class GameLoop {
     private lockDelayResetCount: number = 15
     private entryDelay: number = 0
 
-    constructor(gameSettings: GameSettings, pullInput: () => TetrionControl[]) {
+    constructor(gameSettings: GameSettings) {
         let bagRandomizer = new BagRandomizer(gameSettings.bagRandomizerType)
         let tetrominoType = bagRandomizer.getNext()
-
-        this.pullInput = pullInput
 
         this.matrix = new GameMatrix(gameSettings.matrixColumns)
         this.bagRandomizer = bagRandomizer
@@ -61,11 +57,11 @@ export class GameLoop {
         this.gravity = 1 / 60
     }
 
-    public tick() {
+    public tick(inputs: TetrionControl[]): TetrionState {
         // enterDelay not implemented yet
-        if(this.entryDelay !== 0) {
-            return
-        }
+        // if(this.entryDelay !== 0) {
+        //     return
+        // }
 
         if(this.lockDelayCount === 0 || this.lockDelayResetCount === 0) {
             this.matrix.lock(this.tetrominoState)
@@ -83,7 +79,7 @@ export class GameLoop {
         }
         this.tetrominoState.position[0] += 1
         
-        for(let control of this.pullInput()) {
+        for(let control of inputs) {
             switch (control) {
                 case TetrionControl.Hold: {
                     this.switchHold()
@@ -146,6 +142,8 @@ export class GameLoop {
                 }
             }
         }
+
+        return this.getState()
     }
     
     private rotate(direction: RotateDirection) {
@@ -208,7 +206,7 @@ export class GameLoop {
         this.tetrominoState.orientation = '0'
     }
 
-    public getState(): TetrionState {
+    private getState(): TetrionState {
         return {
             matrixState: this.matrix.getState(),
             tetrominoState: this.tetrominoState,

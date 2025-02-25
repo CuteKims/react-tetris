@@ -1,8 +1,7 @@
 import styles from './Matrix.module.css'
-import { TETROMINO_COLOR, TETROMINO_COLOR_RGB, TETROMINO_SHAPE, TetrominoType } from '../../../game/consts/tetrominos'
+import { TETROMINO_SHAPE, TetrominoType } from '../../../game/consts/tetrominos'
 import { TetrionState } from '../Tetrion'
 import { TetrominoState } from '../../../game/gameLoop'
-import { type MutableRefObject, useEffect, useRef } from 'react'
 
 const Tile: React.FC<{type: TetrominoType | 'garbage' | 'empty' | 'placeholder', shadow?: boolean}> = ({type, shadow}) => {
     // let color: string

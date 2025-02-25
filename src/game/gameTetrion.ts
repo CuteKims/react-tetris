@@ -1,16 +1,11 @@
-import { TetrionControl } from "./consts/control";
 import { GameLoop, GameSettings } from "./gameLoop";
-import { KeyboardInputHandler } from "./keyboardInputHandler";
 
 export type GameMode = 'zen' | '40_lines'
 
 export class GameTetrion {
-    public gameLoop: GameLoop | null = null
-    private keyboardInputHandler = new KeyboardInputHandler()
-
     constructor() {}
 
-    public initializeGame(mode: GameMode) {
+    public initializeGame(mode: GameMode): GameLoop {
         const gameSettings: GameSettings = {
             matrixColumns: 10,
             bagRandomizerType: '7-bag'
@@ -19,23 +14,10 @@ export class GameTetrion {
         switch (mode) {
             case 'zen':
                 //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions
-                this.gameLoop = new GameLoop(gameSettings, () => this.keyboardInputHandler.pull())
-                break;
+                return new GameLoop(gameSettings)
             case "40_lines":
-                this.gameLoop = new GameLoop(gameSettings, () => this.keyboardInputHandler.pull())
-                break;
+                return new GameLoop(gameSettings)
+            default: throw new Error(`Unexpected initialization paramater: expected 'zen' or '40_lines', got '${mode}'`)
         }
-    }
-
-    public getKeyboardEventListeners() {
-        return this.keyboardInputHandler.getListeners()
-    }
-
-    public testInsertToQueue(control: TetrionControl) {
-        this.keyboardInputHandler.testInsertToQueue(control)
-    }
-
-    public endGame() {
-        this.gameLoop = null
     }
 }
