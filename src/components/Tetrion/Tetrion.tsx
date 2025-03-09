@@ -24,12 +24,12 @@ export const Tetrion: React.FC = () => {
     const gameLoop = useRef(tetrion.initializeGame(params.get('mode') as GameMode)).current
     const inputHandler = useRef(new KeyboardInputHandler()).current
     const [tetrionState, updateTetrionState] = useState<TetrionState | undefined>()
-    let tickCountRef = useRef<number>(0)
+    let tickCount = useRef<number>(0).current
     const [tickrate, updateTickrate] = useState(0)
     
     const {start, stop} = useTickLoop(() => {
         updateTetrionState(gameLoop.tick(inputHandler.pull()))
-        tickCountRef.current++
+        tickCount++
     }, 1000 / 60)
 
     useEffect(() => {
@@ -37,8 +37,8 @@ export const Tetrion: React.FC = () => {
         document.addEventListener('keydown', keyDownListener)
         document.addEventListener('keyup', keyUpListener)
         let id = setInterval(() => {
-            updateTickrate(tickCountRef.current)
-            tickCountRef.current = 0
+            updateTickrate(tickCount)
+            tickCount = 0
         }, 1000);
         start()
         return () => {

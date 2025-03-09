@@ -1,7 +1,7 @@
 import './App.css'
 import { MainMenu } from './components/MainMenu/MainMenu'
 import { DeveloperOverlay } from './components/DeveloperOverlay/DeveloperOverlay'
-import { createContext, useEffect, useRef, useState } from 'react'
+import { createContext, useRef } from 'react'
 import { GameTetrion } from './game/gameTetrion'
 import { Tetrion } from './components/Tetrion/Tetrion'
 import { BrowserRouter, Route, Routes } from 'react-router'
@@ -34,7 +34,5 @@ function App() {
         </globalAppContext.Provider>
     )
 }
-
-
 
 export default App
